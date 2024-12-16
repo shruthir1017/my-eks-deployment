@@ -1,9 +1,9 @@
 - name: Deploy application to Kubernetes
   hosts: localhost
   tasks:
-    - name: Apply Kubernetes manifests
+    - name: Apply Kubernetes manifest
       kubernetes.core.k8s:
         kubeconfig: "{{ kubeconfig_path }}"
         state: present
-        definition: "{{ lookup('file', 'kubernetes-manifest.yml') }}"
+        definition: "{{ lookup('file', '/home/jenkins/workspace/my-repo/kubernetes-manifest.yml') }}"
 
