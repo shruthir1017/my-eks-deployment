@@ -1,0 +1,10 @@
+# ansible/deploy.yml
+- name: Deploy application to EKS
+  hosts: localhost
+  tasks:
+    - name: Apply Kubernetes deployment
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig }}"
+        state: present
+        definition: "{{ lookup('file', 'kubernetes-manifest.yml') }}"
+
