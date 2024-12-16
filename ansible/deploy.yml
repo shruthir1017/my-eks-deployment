@@ -8,3 +8,4 @@
         kubeconfig: "{{ kubeconfig_path }}"
         state: present
         definition: "{{ lookup('file', '/home/ubuntu/jenkins/workspace/ansible-deploy/kubernetes-manifest.yml') }}"
+
