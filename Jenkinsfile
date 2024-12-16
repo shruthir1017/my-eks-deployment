@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCESS_KEY_ID = credentials('awsCred')  // replace with your AWS access key ID credential ID
-        AWS_SECRET_ACCESS_KEY = credentials('awsCred')  // replace with your AWS secret key ID credential ID
-        KUBECONFIG_CONTENT = credentials('kubeconfigid')  // replace with your kubeconfig credential ID
+        AWS_ACCESS_KEY_ID = credentials('awsCred')  // use the correct AWS credential ID in Jenkins
+        AWS_SECRET_ACCESS_KEY = credentials('awsCred')  // use the correct AWS secret key ID in Jenkins
+        KUBECONFIG_CONTENT = credentials('kubeconfigid')  // Kubeconfig if needed (optional)
     }
     stages {
         stage('Setup Environment') {
@@ -13,10 +13,9 @@ pipeline {
                     writeFile file: "${WORKSPACE}/kubeconfig", text: KUBECONFIG_CONTENT
                 }
                 sh '''
-                # Export the KUBECONFIG to point to the newly written kubeconfig file
                 export KUBECONFIG=${WORKSPACE}/kubeconfig
 
-                # Verify if the EKS cluster is accessible
+                # Check if the EKS cluster is accessible using AWS CLI
                 aws eks describe-cluster --name test2 --region us-east-1
                 if [ $? -ne 0 ]; then
                     echo "EKS cluster not accessible, exiting."
