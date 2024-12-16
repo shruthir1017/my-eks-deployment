@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -10,12 +9,12 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    // Write kubeconfig to a file
-                    writeFile file: "${WORKSPACE}/kubeconfig", text: "${KUBECONFIG_CONTENT}"
+                    // Write kubeconfig to a file securely (avoiding Groovy string interpolation issues)
+                    writeFile file: "${WORKSPACE}/kubeconfig", text: KUBECONFIG_CONTENT
                 }
                 sh '''
                 export KUBECONFIG=${WORKSPACE}/kubeconfig
-                aws eks update-kubeconfig --name test2 --region  us-east-1
+                aws eks update-kubeconfig --name test2 --region us-east-1
                 kubectl get nodes
                 '''
             }
