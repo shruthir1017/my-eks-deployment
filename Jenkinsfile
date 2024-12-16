@@ -2,7 +2,7 @@ pipeline {
     agent { label 'slave2' }
     environment {
         ANSIBLE_HOST = '44.200.194.144'  // This IP will be used directly for the Ansible inventory
-        KUBECONFIG_PATH = '/home/jenkins/.kube/config'  // Path to the Kubernetes config
+        KUBECONFIG_PATH = '/home/ubuntu/.kube/config'  // Path to the Kubernetes config
     }
     stages {
         stage('Clone Repository') {
