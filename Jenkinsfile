@@ -1,46 +1,34 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCESS_KEY_ID = credentials('awsCred')  // use the correct AWS credential ID in Jenkins
-        AWS_SECRET_ACCESS_KEY = credentials('awsCred')  // use the correct AWS secret key ID in Jenkins
-        KUBECONFIG_CONTENT = credentials('kubeconfigid')  // Kubeconfig if needed (optional)
+        ANSIBLE_HOST = '44.200.194.144'  // This IP will be used directly for the Ansible inventory
+        KUBECONFIG_PATH = '/home/jenkins/.kube/config'  // Path to the Kubernetes config
     }
     stages {
-        stage('Setup Environment') {
+        stage('Clone Repository') {
             steps {
-                script {
-                    // Write kubeconfig to a file securely (avoiding Groovy string interpolation issues)
-                    writeFile file: "${WORKSPACE}/kubeconfig", text: KUBECONFIG_CONTENT
-                }
-                sh '''
-                export KUBECONFIG=${WORKSPACE}/kubeconfig
-
-                # Check if the EKS cluster is accessible using AWS CLI
-                aws eks describe-cluster --name test2 --region us-east-1
-                if [ $? -ne 0 ]; then
-                    echo "EKS cluster not accessible, exiting."
-                    exit 1
-                fi
-
-                # Update kubeconfig and verify by getting the nodes
-                aws eks update-kubeconfig --name test2 --region us-east-1
-                kubectl get nodes
-                '''
-            }
-        }
-        stage('Checkout Code') {
-            steps {
-                checkout scm
+                git branch: 'main', url: 'https://github.com/your-repo.git'
             }
         }
         stage('Run Ansible Playbook') {
             steps {
-                ansiColor('xterm') {
+                sshagent(['jenkins-private-key']) {
                     sh '''
-                    ansible-playbook -e "kubeconfig=${WORKSPACE}/kubeconfig" ansible/deploy.yml
+                    ansible-playbook -i ${ANSIBLE_HOST}, \
+                                     -e kubeconfig_path=${KUBECONFIG_PATH} \
+                                     ansible/deploy.yml
                     '''
                 }
             }
         }
     }
+    post {
+        success {
+            echo 'Deployment Successful!'
+        }
+        failure {
+            echo 'Deployment Failed!'
+        }
+    }
 }
+
