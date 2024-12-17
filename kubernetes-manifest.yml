@@ -25,7 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: example-service
-  namespace: dev  # Set the namespace to dev as well
+  namespace: uat  # Set the namespace to dev as well
 spec:
   selector:
     app: example
