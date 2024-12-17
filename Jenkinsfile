@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'slave2' }
     environment {
-        ANSIBLE_HOST = '44.200.194.144'  // This IP will be used directly for the Ansible inventory
+        ANSIBLE_HOST = '44.220.254.104'  // This IP will be used directly for the Ansible inventory
         KUBECONFIG_PATH = '/home/ubuntu/.kube/config'  // Path to the Kubernetes config
     }
     stages {
